@@ -5,10 +5,16 @@ const app = express();
 const port = 5000;
 
 const checkInputName = require('./middlewares/middleware');
+const logger = require('./middlewares/logger');
 
+app.use('/static', express.static('public'));
+app.use(logger);
+ 
 app.get('/info/:name', checkInputName, (req, res) => {
-    console.log(url.parse(req.url).path);
-    console.log(req.params);
+    // console.log(url.parse(req.url).path);
+    console.log(req.params.name);
+    console.log(req.originalUrl.split('/')[1]);
+    // console.log(req.originalUrl.split('/')[2]);
     // res.status(200).send(`You are looking about the cat ${req.params.name}!`);
     // console.dir(res);
     // res.json({name: 'rex', age: 3, weight: 12});
