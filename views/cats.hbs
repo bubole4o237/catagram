@@ -1,0 +1,13 @@
+<form action="/cats" method="POST">
+    <label for="catName">cat name</label>
+    <input type="text" id="catName" name="cat" />
+    <input type="submit" value="create" />
+</form>
+
+{{#if collectionCats}}
+<ol>
+    {{#each collectionCats}}
+        {{> cat}}
+    {{/each}}
+</ol>
+{{/if}}

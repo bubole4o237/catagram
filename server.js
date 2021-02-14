@@ -3,13 +3,28 @@ const url = require('url');
 
 const app = express();
 const port = 5000;
+const handlebars = require('express-handlebars');
+const bodyParser = require('body-parser');
 
 const checkInputName = require('./middlewares/middleware');
 const logger = require('./middlewares/logger');
+const catsObj = require('./cats');
 
 app.use('/static', express.static('public'));
 app.use(logger);
- 
+
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.engine('hbs', handlebars({
+    extname: 'hbs'
+}));
+app.set('view engine', 'hbs');
+
+app.get('/', (req, res) => {
+    let name = 'Iavor';
+    res.render('home', { name });
+});
+
 app.get('/info/:name', checkInputName, (req, res) => {
     // console.log(url.parse(req.url).path);
     console.log(req.params.name);
@@ -23,13 +38,19 @@ app.get('/info/:name', checkInputName, (req, res) => {
 
 app.get('/download', (req, res) => {
     console.log(__dirname);
-    res.sendFile(__dirname + '/views/index.html');
-;});
+    res.sendFile(__dirname + '/views/home.html');
+    ;
+});
 
-app.post('/ca*ts', (req, res) => {
+app.get('/cats', (req, res) => {
+    res.render('cats', {collectionCats: catsObj.getAll()});
+})
+
+app.post('/cats', (req, res) => {
+    let catName = req.body.cat;
+    catsObj.add(catName);
     console.log('Create cat.');
-    res.status(201);
-    res.send('Cat created successfully!');
+    res.redirect('/cats');
 });
  
 app.all('/', (req, res) => {
